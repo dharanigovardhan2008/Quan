@@ -1,30 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  ArrowRight, 
-  BarChart3,
+import {
+  ArrowRight,
   CheckCircle2,
   ChevronRight,
-  Code2, 
-  Globe2, 
-  Layers, 
-  LayoutDashboard, 
-  Lock, 
-  Menu,
+  Layers,
   MessageSquare,
-  Rocket, 
-  ShieldCheck, 
-  Sparkles,
-  X,
-  ChevronDown,
-  Zap,
-  Smartphone,
-  ShoppingCart,
-  TrendingUp,
-  Cloud,
-  Shield,
-  Cpu
+  Globe2,
+  X
 } from "lucide-react";
 import Image from "next/image";
 import { db } from "@/lib/firebase";
@@ -32,8 +16,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [worksOpen, setWorksOpen] = useState(false);
+
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const [authType, setAuthType] = useState<'signin' | 'signup'>('signin');
