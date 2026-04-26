@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import {
   ArrowRight,
   CheckCircle2,
+  ChevronRight,
   Layers,
   MessageSquare,
   Globe2,
@@ -15,7 +16,9 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
+  const [authType, setAuthType] = useState<"signin" | "signup">("signin");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
@@ -64,27 +67,41 @@ Details: ${data.details}`;
     setIsSubmitting(false);
   };
 
-  return (
-    <div className="min-h-screen bg-white text-black">
+  const navLinks = [
+    { name: "Services", href: "#services" },
+    { name: "Our Work", href: "#works" },
+    { name: "Achievements", href: "#achievements" },
+    { name: "FAQs", href: "#faq" },
+  ];
 
+  return (
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      
       {/* NAVBAR */}
-      <header className={`fixed w-full top-0 z-50 ${isScrolled ? "bg-white shadow" : ""}`}>
-        <div className="max-w-7xl mx-auto flex justify-between items-center p-4">
-          <div className="flex items-center gap-2 font-bold text-xl">
-            <Layers /> QuantumX
+      <div className="fixed top-0 w-full z-50 flex justify-center pt-4">
+        <header className={`w-full max-w-[55rem] rounded-full flex items-center ${isScrolled ? "bg-white shadow" : "bg-white"}`}>
+          <div className="w-full px-5 flex justify-between items-center py-2">
+            <Image src="/logo.png" alt="QuantumX" width={140} height={40} />
+
+            <nav className="hidden md:flex gap-6">
+              {navLinks.map((link) => (
+                <a key={link.name} href={link.href}>{link.name}</a>
+              ))}
+            </nav>
+
+            <button
+              onClick={() => window.open("https://wa.me/919494777869")}
+              className="bg-black text-white px-4 py-2 rounded-full flex items-center gap-2"
+            >
+              Book Call <ArrowRight size={14} />
+            </button>
           </div>
-          <button
-            onClick={() => window.open("https://wa.me/919494777869")}
-            className="bg-black text-white px-4 py-2 rounded-full flex items-center gap-2"
-          >
-            Book Call <ArrowRight size={16} />
-          </button>
-        </div>
-      </header>
+        </header>
+      </div>
 
       {/* HERO */}
-      <section className="pt-32 text-center px-6">
-        <h1 className="text-5xl font-bold mb-6">
+      <section className="pt-40 text-center px-6">
+        <h1 className="text-5xl font-black mb-6">
           The intelligent platform for modern enterprise
         </h1>
 
@@ -110,46 +127,29 @@ Details: ${data.details}`;
 
         <div className="mt-10 flex justify-center gap-6 text-sm text-gray-500">
           <div className="flex items-center gap-1">
-            <CheckCircle2 size={16} /> Fast Delivery
+            <CheckCircle2 size={16} /> Fast
           </div>
           <div className="flex items-center gap-1">
             <CheckCircle2 size={16} /> Secure
           </div>
         </div>
-
-        <div className="mt-16 max-w-4xl mx-auto">
-          <Image
-            src="/hero_dashboard.png"
-            alt="Dashboard"
-            width={1000}
-            height={600}
-            className="rounded-xl"
-          />
-        </div>
       </section>
 
       {/* SERVICES */}
-      <section className="py-20 text-center">
+      <section id="services" className="py-20 text-center">
         <h2 className="text-3xl font-bold mb-10">Services</h2>
-
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {["Web Development", "AI Integration", "Mobile Apps"].map((s) => (
+          {["Web Dev", "AI", "Mobile"].map((s) => (
             <div key={s} className="border p-6 rounded-xl">
-              <h3 className="font-bold text-lg mb-2">{s}</h3>
-              <p className="text-gray-500 text-sm">
-                High-quality {s} solutions built for scale.
-              </p>
+              <h3 className="font-bold">{s}</h3>
             </div>
           ))}
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t py-10 mt-20 text-center">
-        <p className="text-sm text-gray-500">
-          © {new Date().getFullYear()} QuantumX Technologies
-        </p>
-
+      <footer className="border-t py-10 text-center">
+        <p>© {new Date().getFullYear()} QuantumX</p>
         <div className="flex justify-center gap-4 mt-4">
           <MessageSquare />
           <Globe2 />
@@ -159,27 +159,18 @@ Details: ${data.details}`;
       {/* MODAL */}
       {projectModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-          <div className="bg-white p-6 rounded-xl w-full max-w-md relative">
-            <button
-              onClick={() => setProjectModalOpen(false)}
-              className="absolute top-2 right-2"
-            >
+          <div className="bg-white p-6 rounded-xl relative">
+            <button onClick={() => setProjectModalOpen(false)} className="absolute top-2 right-2">
               <X />
             </button>
-
             <h2 className="text-xl font-bold mb-4">Book Project</h2>
 
             <form onSubmit={handleProjectSubmit} className="space-y-4">
-              <input name="name" placeholder="Name" className="w-full border p-2 rounded" required />
-              <input name="phone" placeholder="Phone" className="w-full border p-2 rounded" required />
-              <input name="amount" placeholder="Budget" className="w-full border p-2 rounded" required />
-
-              <button className="bg-blue-600 text-white w-full py-3 rounded">
-                {isSubmitting ? "Submitting..." : "Submit"}
+              <input name="name" placeholder="Name" className="border p-2 w-full" required />
+              <input name="phone" placeholder="Phone" className="border p-2 w-full" required />
+              <button className="bg-blue-600 text-white w-full py-2 rounded">
+                Submit
               </button>
-
-              {submitStatus === "success" && <p className="text-green-600">Saved successfully!</p>}
-              {submitStatus === "error" && <p className="text-red-600">Error saving data</p>}
             </form>
           </div>
         </div>
