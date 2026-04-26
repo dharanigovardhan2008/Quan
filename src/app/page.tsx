@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import {
   ArrowRight,
   CheckCircle2,
-  ChevronRight,
   Layers,
   MessageSquare,
   Globe2,
